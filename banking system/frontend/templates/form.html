@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Bank</title>
+    
+    <!-- External Resources -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-color: #142038;
+            --secondary-color: #202e58;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('bank.jpg') no-repeat center center fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Registration Container */
+        .registration-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header Section */
+        .registration-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .registration-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .registration-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Form Styles */
+        .registration-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .input-field {
+            position: relative;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background-color: white;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        /* Terms & Conditions */
+        .terms-container {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+        }
+
+        .terms-container input {
+            width: auto;
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+
+        .terms-container label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .terms-container a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        /* Buttons */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Login Link */
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .modal-header h3 {
+            color: var(--dark-color);
+            font-size: 24px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .registration-header {
+                padding: 20px;
+            }
+            
+            .registration-header h1 {
+                font-size: 24px;
+            }
+            
+            .registration-form {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Registration Form -->
+    <div class="registration-container">
+        <div class="registration-header">
+            <h1><i class="fas fa-university"></i> Pipeline Bank</h1>
+            <p>Create your online banking account</p>
+        </div>
+
+        <form class="registration-form" action="#" method="POST">
+            <!-- Name Fields -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <div class="input-field">
+                        <input type="text" id="firstName" name="firstName" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <div class="input-field">
+                        <input type="text" id="lastName" name="lastName" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <div class="input-field">
+                    <input type="email" id="email" name="email" required>
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <div class="input-field">
+                    <input type="tel" id="phone" name="phone" required>
+                    <i class="fas fa-phone input-icon"></i>
+                </div>
+            </div>
+
+            <!-- Account Details -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountType">Account Type</label>
+                    <select id="accountType" name="accountType" required>
+                        <option value="">Select account type</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="checking">Checking Account</option>
+                        <option value="business">Business Account</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Password Fields -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-field">
+                        <input type="password" id="password" name="password" required>
+                        <i class="fas fa-key input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-field">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <i class="fas fa-key input-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terms & Conditions -->
+            <div class="terms-container">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a> of Pipeline Bank</label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">Create Account</button>
+
+            <!-- Login Link -->
+            <div class="login-link">
+                Already have an account? <a id="signInLink">Sign In</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sign In Modal -->
+    <div class="modal-overlay" id="signInModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeSignIn">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-in-alt"></i> Sign In</h3>
+            </div>
+
+            <form id="signInForm">
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-field">
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-field">
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Forgot Password -->
+                <div class="form-group" style="text-align: right;">
+                    <a href="#" style="color: var(--primary-color); font-size: 13px;">Forgot Password?</a>
+                </div>
+             
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Sign In</button>
+            </form>
+            
+            <!-- Sign Up Link -->
+            <div class="login-link">
+                Don't have an account? <a href="#" id="signUpLink">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const signInLink = document.getElementById('signInLink');
+        const signInModal = document.getElementById('signInModal');
+        const closeSignIn = document.getElementById('closeSignIn');
+        const signInForm = document.getElementById('signInForm');
+        const signUpLink = document.getElementById('signUpLink');
+
+        // Event Listeners
+        signInLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signInModal.classList.add('active');
+        });
+
+        closeSignIn.addEventListener('click', () => {
+            signInModal.classList.remove('active');
+        });
+
+        signInModal.addEventListener('click', (e) => {
+            if (e.target === signInModal) {
+                signInModal.classList.remove('active');
+            }
+        });
+
+        signUpLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signInModal.classList.remove('active');
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // URL Parameters Handling
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('signin') === 'true') {
+            signInModal.classList.add('active');
+        }
+
+        // Form Submissions
+        document.querySelector('.registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            alert('Registration successful!');
+            window.location.href = 'dashboard.html';
+        });
+
+        document.getElementById('signInForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            window.location.href = 'dashboard.html';
+        });
+
+        // Registration form submission
+document.querySelector('.registration-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const userData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        password: document.getElementById('password').value
+    };
+
+    fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Registration failed');
+        return response.json();
+    })
+    .then(data => {
+        window.location.href = 'dashboard.html?userId=' + data.id;
+    })
+    .catch(error => {
+        alert(error.message);
+    });
+});
+    </script>
+</body>
+</html>

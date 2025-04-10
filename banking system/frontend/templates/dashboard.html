@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Pipeline Bank</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --sidebar-width: 250px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('bank.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--dark-color);
+            min-height: 100vh;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            position: fixed;
+            height: 100%;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .sidebar-header h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            margin: 5px 0;
+            color: #64748b;
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, 
+        .menu-item.active {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: #fef2f2;
+            color: var(--danger-color);
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            transition: var(--transition);
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .greeting h2 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .greeting p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .date-info {
+            text-align: right;
+        }
+
+        .date-info p {
+            color: #64748b;
+        }
+
+        /* Cards Section */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+        }
+
+        .card-icon.create { background-color: var(--primary-color); }
+        .card-icon.balance { background-color: var(--success-color); }
+        .card-icon.deposit { background-color: var(--warning-color); }
+        .card-icon.transfer { background-color: #8b5cf6; }
+        .card-icon.withdraw { background-color: var(--danger-color); }
+        .card-icon.history { background-color: #14b8a6; }
+        .card-icon.view { background-color: #6c5ce7; }
+
+        .card-title {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .card-body p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        /* Transactions Section */
+        .transactions-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: var(--transition);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            color: var(--dark-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        /* Bank Card Styles */
+        .card-container {
+            perspective: 1000px;
+        }
+        
+        .bank-card {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-front {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #4b4b4b, #7a7a7a);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .flipped {
+            transform: rotateY(180deg);
+        }
+        
+        /* Front Side Elements */
+        .card-logo {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .card-chip {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            font-size: 24px;
+            color: gold;
+        }
+        
+        .card-number {
+            margin-top: 60px;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .card-holder small, 
+        .card-expiry small {
+            display: block;
+            font-size: 10px;
+            opacity: 0.8;
+        }
+        
+        .card-brand {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 28px;
+            color: white;
+        }
+        
+        /* Back Side Elements */
+        .card-magnetic-strip {
+            height: 40px;
+            background: #000;
+            margin: 0 -20px;
+            margin-top: 20px;
+        }
+        
+        .card-cvv {
+            background: white;
+            color: #333;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            width: 80%;
+            align-self: flex-end;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .cvv-field {
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .btn-show-cvv {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .card-contact {
+            font-size: 10px;
+            margin-top: 15px;
+        }
+        
+        .card-logo-back {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: auto;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .balance-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+}
+.dashboard-section {
+    transition: var(--transition);
+}
+
+.form-check {
+    margin-bottom: 10px;
+}
+
+.form-check-input {
+    margin-top: 0.2em;
+}
+
+.form-check-label {
+    margin-left: 10px;
+}
+/* Previous CSS styles remain unchanged */
+        /* Add new balance styles */
+        .balance-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .balance-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .balance-label {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .balance-amount {
+            font-weight: 600;
+            color: var(--success-color);
+            font-size: 1.1em;
+        }
+
+        .balance-note {
+            padding: 12px;
+            background-color: #e9f5fe;
+            border-radius: 6px;
+            color: #31708f;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+
+        .transaction-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar-header h3, 
+            .menu-item span {
+                display: none;
+            }
+
+            .menu-item {
+                justify-content: center;
+                padding: 12px 0;
+            }
+
+            .menu-item i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+
+            .logout-btn {
+                justify-content: center;
+            }
+
+            .logout-btn span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .date-info {
+                margin-top: 15px;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-university"></i> Pipeline Bank</h3>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#" id="dashboardLink" class="menu-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" id="profileLink" class="menu-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="#" id="settingsLink" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </a>
+                <button class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+         
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header Section -->
+            <div class="header">
+                <div class="user-info">
+                    <div class="user-avatar">CK</div>
+                    <div class="greeting">
+                        <h2>Welcome, Cavin Khoza</h2>
+                        <p>Last login: Today at 12:45 AM</p>
+                    </div>
+                </div>
+                <div class="date-info">
+                    <p id="current-date">Monday, March 12, 2023</p>
+                    <p id="current-time">10:30 AM</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-section" id="dashboardMain" style="display: block;">
+                <div class="cards-container">
+                    <!-- Create Account Card -->
+                    <div class="card" id="createAccountCard">
+                        <div class="card-header">
+                            <div class="card-icon create">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <h3 class="card-title">Create Account</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Open a new savings or checking account</p>
+                        </div>
+                    </div>
+
+                    <!-- View Balance Card -->
+                    <div class="card" id="viewBalanceCard">
+                        <div class="card-header">
+                            <div class="card-icon balance">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <h3 class="card-title">View Balance</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Check your account balances</p>
+                        </div>
+                    </div>
+
+                    <!-- Deposit Money Card -->
+                    <div class="card" id="depositMoneyCard">
+                        <div class="card-header">
+                            <div class="card-icon deposit">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <h3 class="card-title">Deposit Money</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Make a deposit to your account</p>
+                        </div>
+                    </div>
+
+                    <!-- Transfer Money Card -->
+                    <div class="card" id="transferMoneyCard">
+                        <div class="card-header">
+                            <div class="card-icon transfer">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <h3 class="card-title">Transfer Money</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Transfer funds between accounts or to others</p>
+                        </div>
+                    </div>
+
+                    <!-- Withdraw Money Card -->
+                    <div class="card" id="withdrawMoneyCard">
+                        <div class="card-header">
+                            <div class="card-icon withdraw">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                            <h3 class="card-title">Withdraw Money</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Withdraw funds from your account</p>
+                        </div>
+                    </div>
+
+                    <!-- Transaction History Card -->
+                    <div class="card" id="transactionHistoryCard">
+                        <div class="card-header">
+                            <div class="card-icon history">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h3 class="card-title">Transaction History</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>View your recent transactions</p>
+                        </div>
+                    </div>
+
+                    <!-- View Card Card -->
+                    <div class="card" id="viewCard">
+                        <div class="card-header">
+                            <div class="card-icon view">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <h3 class="card-title">View Card</h3>
+                        </div>
+                        <div class="card-body">
+                            <p>Click to view your card details</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions Section (Now below the dashboard) -->
+                <div class="transactions-container" id="recentTransactions">
+                    <h3 class="section-title">
+                        <i class="fas fa-clock"></i>
+                        Recent Transactions
+                    </h3>
+                    <!-- Transaction items would be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div class="dashboard-section" id="profileSection" style="display: none;">
+                <div class="transactions-container">
+                    <h3 class="section-title"><i class="fas fa-user"></i> Update Profile</h3>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" id="fullName" value="Cavin Khoza">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" class="form-control" id="email" value="cavin@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" value="+27 123 456 789">
+                        </div>
+                        <h4 class="mt-4 mb-3">Security Settings</h4>
+                        <div class="form-group">
+                            <label>New PIN</label>
+                            <input type="password" class="form-control" id="newPin" placeholder="Enter new PIN">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm PIN</label>
+                            <input type="password" class="form-control" id="confirmPin" placeholder="Confirm new PIN">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="dashboard-section" id="settingsSection" style="display: none;">
+                <div class="transactions-container">
+                    <h3 class="section-title"><i class="fas fa-cog"></i> Account Settings</h3>
+                    <form id="settingsForm">
+                        <div class="form-group">
+                            <label>Theme Preference</label>
+                            <select class="form-control" id="theme">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="system">System Default</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Transaction Notifications</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="emailNotifications">
+                                <label class="form-check-label">Email Notifications</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="smsNotifications">
+                                <label class="form-check-label">SMS Notifications</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Two-Factor Authentication</label>
+                            <select class="form-control" id="2fa">
+                                <option value="sms">SMS</option>
+                                <option value="email">Email</option>
+                                <option value="none">None</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                    </form>
+                </div>
+            </div>
+          
+        </div>
+    </div>
+
+    <script>
+        // Function to toggle sections based on the clicked link
+        document.getElementById('dashboardLink').addEventListener('click', function() {
+            showSection('dashboardMain');
+        });
+
+        document.getElementById('profileLink').addEventListener('click', function() {
+            showSection('profileSection');
+        });
+
+        document.getElementById('settingsLink').addEventListener('click', function() {
+            showSection('settingsSection');
+        });
+
+        // Function to display the active section and hide others
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.dashboard-section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Hide recent transactions if Profile is clicked
+            if (sectionId === 'profileSection') {
+                document.getElementById('recentTransactions').style.display = 'none';
+            } else {
+                document.getElementById('recentTransactions').style.display = 'block';
+            }
+
+            // Show the selected section
+            document.getElementById(sectionId).style.display = 'block';
+
+            // Highlight the active menu item
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            const activeMenuItem = document.querySelector(`#${sectionId.replace('Section', 'Link')}`);
+            activeMenuItem.classList.add('active');
+        
+        }
+
+        // Load user accounts on dashboard load
+document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    
+    fetch(`/api/accounts/user/${userId}`)
+        .then(response => response.json())
+        .then(accounts => {
+            // Populate account selection in all modals
+            const accountSelects = document.querySelectorAll('select[id$="Account"]');
+            accountSelects.forEach(select => {
+                select.innerHTML = accounts.map(acc => `
+                    <option value="${acc.id}">${acc.accountType} (${acc.accountNumber})</option>
+                `).join('');
+            });
+        });
+});
+
+// Example deposit functionality
+document.getElementById('depositForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const accountId = document.getElementById('depositAccount').value;
+    const amount = document.getElementById('depositAmount').value;
+
+    fetch(`/api/accounts/deposit?accountId=${accountId}&amount=${amount}`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Deposit failed');
+        return response.json();
+    })
+    .then(updatedAccount => {
+        // Update UI with new balance
+        document.querySelector(`#account-${updatedAccount.id} .balance`).textContent = 
+            'R' + updatedAccount.balance.toFixed(2);
+    })
+    .catch(error => {
+        alert(error.message);
+    });
+});
+    </script>
+</body>
+
+    <!-- Create Account Modal -->
+    <div class="modal-overlay" id="createAccountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Create New Account</h3>
+                <button class="close-modal" id="closeCreateAccount">&times;</button>
+            </div>
+            <form id="createAccountForm">
+                <div class="form-group">
+                    <label for="accountType">Account Type</label>
+                    <select id="accountType" class="form-control" required>
+                        <option value="">Select account type</option>
+                        <option value="checking">Checking Account</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="business">Business Account</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="initialDeposit">Initial Deposit (R)</label>
+                    <input type="number" id="initialDeposit" class="form-control" placeholder="Enter amount" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelCreateAccount">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-money-bill-wave"></i> Withdraw Funds</h3>
+                <button class="close-modal" id="closeWithdrawModal">&times;</button>
+            </div>
+            <form id="withdrawForm">
+                <div class="form-group">
+                    <label for="withdrawAccount">From Account</label>
+                    <select id="withdrawAccount" class="form-control" required>
+                        <option value="">Select account</option>
+                        <option value="checking">Checking Account</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="business">Business Account</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawalAmount">Withdrawal Amount (R)</label>
+                    <input type="number" 
+                           id="withdrawalAmount" 
+                           class="form-control" 
+                           placeholder="Enter amount to withdraw" 
+                           required
+                           step="0.01">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelWithdraw">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Withdraw</button>
+                </div>
+            </form>
+        </div>
+    </div>
+   <!--Modal for viewing the balance-->
+   <!-- Add view balance modal -->
+   <div class="modal-overlay" id="viewBalanceModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-wallet"></i> Account Balances</h3>
+            <button class="close-modal" id="closeViewBalance">&times;</button>
+        </div>
+        <form id="viewBalanceForm">
+            <div class="form-group">
+                <label for="selectedAccount">Select Account</label>
+                <select id="selectedAccount" class="form-control" required>
+                    <option value="">Choose account</option>
+                    <option value="checking">Checking Account</option>
+                    <option value="savings">Savings Account</option>
+                    <option value="business">Business Account</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="balance-container">
+                    <div class="balance-item">
+                        <span class="balance-label">Current Balance:</span>
+                        <span class="balance-amount" id="currentBalanceAmount">R0.00</span>
+                    </div>
+                    <div class="balance-item">
+                        <span class="balance-label">Available Balance:</span>
+                        <span class="balance-amount" id="availableBalanceAmount">R0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="balance-note">
+                    <i class="fas fa-info-circle"></i>
+                    Available balance reflects cleared funds ready for use
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="closeBalanceModal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+       
+
+
+
+    <div class="modal-overlay" id="depositModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-coins"></i> Deposit Funds</h3>
+                <button class="close-modal" id="closeDepositModal">&times;</button>
+            </div>
+            <form id="depositForm">
+                <div class="form-group">
+                    <label for="depositAccount">To Account</label>
+                    <select id="depositAccount" class="form-control" required>
+                        <option value="">Select destination account</option>
+                        <option value="checking">Checking Account</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="business">Business Account</option>
+                    </select>
+                </div>
+    
+                <div class="form-group">
+                    <label for="currentBalance">Available Balance</label>
+                    <div id="currentBalance" class="balance-display">
+                        R10,000.00 <!-- Dynamic value should be inserted here -->
+                    </div>
+                </div>
+    
+                <div class="form-group">
+                    <label for="depositAmount">Deposit Amount (R)</label>
+                    <input type="number" 
+                           id="depositAmount" 
+                           class="form-control" 
+                           placeholder="Enter deposit amount" 
+                           required
+                           step="0.01"
+                           min="0.01">
+                </div>
+    
+                <div class="form-group">
+                    <div class="deposit-note">
+                        <i class="fas fa-info-circle"></i>
+                        Deposits are credited to your account instantly
+                    </div>
+                </div>
+    
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelDeposit">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Deposit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- View Card Modal -->
+    <div class="modal-overlay" id="cardModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <button class="close-modal" id="closeCardModal">&times;</button>
+            <div class="card-container">
+                <div class="bank-card" id="flippableCard">
+                    <!-- Front Side -->
+                    <div class="card-front">
+                        <div class="card-logo">
+                            <i class="fas fa-university"></i> Pipeline Bank
+                        </div>
+                        <div class="card-chip">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <div class="card-number">
+                            <span>•••• •••• •••• 1234</span>
+                        </div>
+                        <div class="card-details">
+                            <div class="card-holder">
+                                <small>Card Holder</small>
+                                <div>CAVIN KHOZA</div>
+                            </div>
+                            <div class="card-expiry">
+                                <small>Expires</small>
+                                <div>06/25</div>
+                            </div>
+                        </div>
+                        <div class="card-brand">
+                            <i class="fab fa-cc-visa"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Back Side -->
+                    <div class="card-back">
+                        <div class="card-magnetic-strip"></div>
+                        <div class="card-cvv">
+                            <small>CVV</small>
+                            <div class="cvv-field">•••</div>
+                            <button class="btn-show-cvv">
+                                <i class="fas fa-eye"></i> Show
+                            </button>
+                        </div>
+                        <div class="card-contact">
+                            <p>24/7 Customer Service: 0800 123 4567</p>
+                        </div>
+                        <div class="card-logo-back">
+                            <i class="fas fa-university"></i> Pipeline Bank
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-actions">
+                    <button class="btn btn-secondary" id="flipCardBtn">
+                        <i class="fas fa-sync-alt"></i> Flip Card
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="transferModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exchange-alt"></i> Transfer Funds</h3>
+                <button class="close-modal" id="closeTransferModal">&times;</button>
+            </div>
+            <form id="transferForm">
+                <div class="form-group">
+                    <label for="fromAccount">From Account</label>
+                    <select id="fromAccount" class="form-control" required>
+                        <option value="">Select source account</option>
+                        <option value="checking">Checking Account</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="business">Business Account</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="toAccount">To Account</label>
+                    <select id="toAccount" class="form-control" required>
+                        <option value="">Select destination account</option>
+                        <option value="checking">Checking Account</option>
+                        <option value="savings">Savings Account</option>
+                        <option value="business">Business Account</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transferAmount">Transfer Amount (R)</label>
+                    <input type="number" 
+                           id="transferAmount" 
+                           class="form-control" 
+                           placeholder="Enter transfer amount" 
+                           required
+                           step="0.01"
+                           min="0.01">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" id="cancelTransfer">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Transfer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Update current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+            
+            let hours = now.getHours();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes} ${ampm}`;
+        }
+        
+        // Initialize date/time and update every minute
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+
+        // Modal Handling
+        const modals = {
+            createAccount: {
+                open: document.getElementById('createAccountCard'),
+                modal: document.getElementById('createAccountModal'),
+                close: document.getElementById('closeCreateAccount'),
+                cancel: document.getElementById('cancelCreateAccount')
+            },
+            viewCard: {
+                open: document.getElementById('viewCard'),
+                modal: document.getElementById('cardModal'),
+                close: document.getElementById('closeCardModal')
+            }
+        };
+
+        // Set up event listeners for each modal
+        Object.values(modals).forEach(modal => {
+            // Open modal
+            modal.open.addEventListener('click', () => {
+                modal.modal.classList.add('active');
+            });
+
+            // Close modal with X button
+            modal.close.addEventListener('click', () => {
+                modal.modal.classList.remove('active');
+                // Reset card to front view when closing
+                if (modal === modals.viewCard) {
+                    flippableCard.classList.remove('flipped');
+                    cvvField.textContent = '•••';
+                    showCvvBtn.innerHTML = '<i class="fas fa-eye"></i> Show';
+                }
+            });
+
+            // Close modal when clicking outside
+            modal.modal.addEventListener('click', (e) => {
+                if (e.target === modal.modal) {
+                    modal.modal.classList.remove('active');
+                    if (modal === modals.viewCard) {
+                        flippableCard.classList.remove('flipped');
+                        cvvField.textContent = '•••';
+                        showCvvBtn.innerHTML = '<i class="fas fa-eye"></i> Show';
+                    }
+                }
+            });
+        });
+
+        // Card View Functionality
+        const flippableCard = document.getElementById('flippableCard');
+        const flipCardBtn = document.getElementById('flipCardBtn');
+        const showCvvBtn = document.querySelector('.btn-show-cvv');
+        const cvvField = document.querySelector('.cvv-field');
+        
+        // Flip card on click
+        flippableCard.addEventListener('click', () => {
+            flippableCard.classList.toggle('flipped');
+        });
+        
+        // Flip card with button
+        flipCardBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            flippableCard.classList.toggle('flipped');
+        });
+        
+        // Show CVV (with security confirmation)
+        showCvvBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (cvvField.textContent === '•••') {
+                if (confirm('For security reasons, please confirm you want to reveal your CVV code')) {
+                    cvvField.textContent = '123';
+                    showCvvBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
+                }
+            } else {
+                cvvField.textContent = '•••';
+                showCvvBtn.innerHTML = '<i class="fas fa-eye"></i> Show';
+            }
+        });
+        
+        // Close with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modals.viewCard.modal.classList.contains('active')) {
+                modals.viewCard.modal.classList.remove('active');
+                flippableCard.classList.remove('flipped');
+                cvvField.textContent = '•••';
+                showCvvBtn.innerHTML = '<i class="fas fa-eye"></i> Show';
+            }
+        });
+
+        // Form submissions
+        document.getElementById('createAccountForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Account creation request submitted!');
+            this.reset();
+            modals.createAccount.modal.classList.remove('active');
+        });
+     
+      // Account data structure
+let accounts = {
+    checking: 0.00,
+    savings: 0.00,
+    business: 0.00
+};
+
+// Transaction history
+let transactions = [];
+
+// Modal Handling - Add new modals to the list
+modals.withdraw = {
+    open: document.getElementById('withdrawMoneyCard'),
+    modal: document.getElementById('withdrawModal'),
+    close: document.getElementById('closeWithdrawModal'),
+    cancel: document.getElementById('cancelWithdraw')
+};
+
+modals.deposit = {
+    open: document.getElementById('depositMoneyCard'),
+    modal: document.getElementById('depositModal'),
+    close: document.getElementById('closeDepositModal'),
+    cancel: document.getElementById('cancelDeposit')
+};
+
+modals.transfer = {
+    open: document.getElementById('transferMoneyCard'),
+    modal: document.getElementById('transferModal'),
+    close: document.getElementById('closeTransferModal'),
+    cancel: document.getElementById('cancelTransfer')
+};
+
+// Initialize all modals
+Object.values(modals).forEach(modal => {
+    // Open modal
+    if(modal.open) modal.open.addEventListener('click', () => modal.modal.classList.add('active'));
+
+    // Close modal with X button
+    if(modal.close) modal.close.addEventListener('click', () => modal.modal.classList.remove('active'));
+
+    // Close modal with cancel button
+    if(modal.cancel) modal.cancel.addEventListener('click', () => modal.modal.classList.remove('active'));
+
+    // Close modal when clicking outside
+    if(modal.modal) modal.modal.addEventListener('click', (e) => {
+        if(e.target === modal.modal) modal.modal.classList.remove('active');
+    });
+});
+
+// Deposit functionality
+document.getElementById('depositForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const account = document.getElementById('depositAccount').value;
+    const amount = parseFloat(document.getElementById('depositAmount').value);
+
+    if(account && amount > 0) {
+        accounts[account] += amount;
+        transactions.push({
+            type: 'deposit',
+            account,
+            amount,
+            date: new Date().toLocaleString()
+        });
+        updateTransactionHistory();
+        this.reset();
+        this.parentElement.parentElement.classList.remove('active');
+        alert(`Successfully deposited R${amount.toFixed(2)} to ${account} account`);
+    }
+});
+
+// Withdraw functionality
+document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const account = document.getElementById('withdrawAccount').value;
+    const amount = parseFloat(document.getElementById('withdrawalAmount').value);
+
+    if(account && amount > 0) {
+        if(accounts[account] >= amount) {
+            accounts[account] -= amount;
+            transactions.push({
+                type: 'withdrawal',
+                account,
+                amount,
+                date: new Date().toLocaleString()
+            });
+            updateTransactionHistory();
+            this.reset();
+            this.parentElement.parentElement.classList.remove('active');
+            alert(`Successfully withdrew R${amount.toFixed(2)} from ${account} account`);
+        } else {
+            alert('Insufficient funds for this withdrawal');
+        }
+    }
+});
+
+// Transfer functionality (add this modal HTML if missing)
+document.getElementById('transferForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fromAccount = document.getElementById('fromAccount').value;
+    const toAccount = document.getElementById('toAccount').value;
+    const amount = parseFloat(document.getElementById('transferAmount').value);
+
+    if(fromAccount && toAccount && amount > 0) {
+        if(fromAccount === toAccount) {
+            alert('Cannot transfer between the same accounts');
+            return;
+        }
+
+        if(accounts[fromAccount] >= amount) {
+            accounts[fromAccount] -= amount;
+            accounts[toAccount] += amount;
+            transactions.push({
+                type: 'transfer',
+                from: fromAccount,
+                to: toAccount,
+                amount,
+                date: new Date().toLocaleString()
+            });
+            updateTransactionHistory();
+            this.reset();
+            this.parentElement.parentElement.classList.remove('active');
+            alert(`Successfully transferred R${amount.toFixed(2)} from ${fromAccount} to ${toAccount}`);
+        } else {
+            alert('Insufficient funds for this transfer');
+        }
+    }
+});
+
+// Update balance display in deposit modal
+document.getElementById('depositAccount').addEventListener('change', function() {
+    const balanceDisplay = document.getElementById('currentBalance');
+    if(this.value) {
+        balanceDisplay.textContent = `R${accounts[this.value].toFixed(2)}`;
+    } else {
+        balanceDisplay.textContent = 'R0.00';
+    }
+});
+
+// Transaction history display
+function updateTransactionHistory() {
+    const container = document.querySelector('.transactions-container');
+    const transactionList = transactions.slice(-5).reverse().map(transaction => `
+        <div class="transaction-item" style="padding: 10px; border-bottom: 1px solid #eee;">
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                    <strong>${transaction.type.toUpperCase()}</strong>
+                    ${transaction.type === 'transfer' ? 
+                        `(${transaction.from} → ${transaction.to})` : 
+                        `(${transaction.account})`}
+                </div>
+                <div style="color: ${transaction.type === 'deposit' ? 'green' : 'red'}">
+                    R${transaction.amount.toFixed(2)}
+                </div>
+            </div>
+            <small style="color: #666;">${transaction.date}</small>
+        </div>
+    `).join('');
+    
+    container.innerHTML = `
+        <h3 class="section-title">
+            <i class="fas fa-clock"></i>
+            Recent Transactions
+        </h3>
+        ${transactionList}
+    `;
+    }
+
+   // Initial transaction history update
+updateTransactionHistory();
+        // Add modals
+        modals.viewBalance = {
+            open: document.getElementById('viewBalanceCard'),
+            modal: document.getElementById('viewBalanceModal'),
+            close: document.getElementById('closeViewBalance'),
+            cancel: document.getElementById('closeBalanceModal')
+        };
+
+        modals.transfer = {
+            open: document.getElementById('transferMoneyCard'),
+            modal: document.getElementById('transferModal'),
+            close: document.getElementById('closeTransferModal'),
+            cancel: document.getElementById('cancelTransfer')
+        };
+
+        modals.withdraw = {
+            open: document.getElementById('withdrawMoneyCard'),
+            modal: document.getElementById('withdrawModal'),
+            close: document.getElementById('closeWithdrawModal'),
+            cancel: document.getElementById('cancelWithdraw')
+        };
+
+        modals.deposit = {
+            open: document.getElementById('depositMoneyCard'),
+            modal: document.getElementById('depositModal'),
+            close: document.getElementById('closeDepositModal'),
+            cancel: document.getElementById('cancelDeposit')
+        };
+
+        // Initialize all modals
+        Object.values(modals).forEach(modal => {
+            if(modal.open) modal.open.addEventListener('click', () => modal.modal.classList.add('active'));
+            if(modal.close) modal.close.addEventListener('click', () => modal.modal.classList.remove('active'));
+            if(modal.cancel) modal.cancel.addEventListener('click', () => modal.modal.classList.remove('active'));
+            if(modal.modal) modal.modal.addEventListener('click', (e) => {
+                if(e.target === modal.modal) modal.modal.classList.remove('active');
+            });
+        });
+
+        // Add balance viewing functionality
+        document.getElementById('selectedAccount').addEventListener('change', function() {
+            if(this.value && accounts[this.value]) {
+                const balance = accounts[this.value];
+                document.getElementById('currentBalanceAmount').textContent = `R${balance.toFixed(2)}`;
+                document.getElementById('availableBalanceAmount').textContent = `R${balance.toFixed(2)}`;
+            } else {
+                document.getElementById('currentBalanceAmount').textContent = 'R0.00';
+                document.getElementById('availableBalanceAmount').textContent = 'R0.00';
+            }
+        });
+
+        document.getElementById('viewBalanceCard').addEventListener('click', () => {
+            document.getElementById('selectedAccount').value = 'checking';
+            document.getElementById('selectedAccount').dispatchEvent(new Event('change'));
+        });
+
+        // Add transaction functionality
+        document.getElementById('depositForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const account = document.getElementById('depositAccount').value;
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+
+            if(account && amount > 0) {
+                accounts[account] += amount;
+                transactions.push({
+                    type: 'deposit',
+                    account,
+                    amount,
+                    date: new Date().toLocaleString()
+                });
+                updateTransactionHistory();
+                this.reset();
+                this.parentElement.parentElement.classList.remove('active');
+                alert(`Successfully deposited R${amount.toFixed(2)} to ${account} account`);
+            }
+        });
+
+        document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const account = document.getElementById('withdrawAccount').value;
+            const amount = parseFloat(document.getElementById('withdrawalAmount').value);
+
+            if(account && amount > 0) {
+                if(accounts[account] >= amount) {
+                    accounts[account] -= amount;
+                    transactions.push({
+                        type: 'withdrawal',
+                        account,
+                        amount,
+                        date: new Date().toLocaleString()
+                    });
+                    updateTransactionHistory();
+                    this.reset();
+                    this.parentElement.parentElement.classList.remove('active');
+                    alert(`Successfully withdrew R${amount.toFixed(2)} from ${account} account`);
+                } else {
+                    alert('Insufficient funds for this withdrawal');
+                }
+            }
+        });
+
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fromAccount = document.getElementById('fromAccount').value;
+            const toAccount = document.getElementById('toAccount').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+
+            if(fromAccount && toAccount && amount > 0) {
+                if(fromAccount === toAccount) {
+                    alert('Cannot transfer between the same accounts');
+                    return;
+                }
+
+                if(accounts[fromAccount] >= amount) {
+                    accounts[fromAccount] -= amount;
+                    accounts[toAccount] += amount;
+                    transactions.push({
+                        type: 'transfer',
+                        from: fromAccount,
+                        to: toAccount,
+                        amount,
+                        date: new Date().toLocaleString()
+                    });
+                    updateTransactionHistory();
+                    this.reset();
+                    this.parentElement.parentElement.classList.remove('active');
+                    alert(`Successfully transferred R${amount.toFixed(2)} from ${fromAccount} to ${toAccount}`);
+                } else {
+                    alert('Insufficient funds for this transfer');
+                }
+            }
+        });
+
+        function updateTransactionHistory() {
+            const container = document.querySelector('.transactions-container');
+            const transactionList = transactions.slice(-5).reverse().map(transaction => `
+                <div class="transaction-item">
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <strong>${transaction.type.toUpperCase()}</strong>
+                            ${transaction.type === 'transfer' ? 
+                                `(${transaction.from} → ${transaction.to})` : 
+                                `(${transaction.account})`}
+                        </div>
+                        <div style="color: ${transaction.type === 'deposit' ? 'green' : 'red'}">
+                            R${transaction.amount.toFixed(2)}
+                        </div>
+                    </div>
+                    <small style="color: #666;">${transaction.date}</small>
+                </div>
+            `).join('');
+            
+            container.innerHTML = `
+                <h3 class="section-title">
+                    <i class="fas fa-clock"></i>
+                    Recent Transactions
+                </h3>
+                ${transactionList}
+            `;
+        }
+
+        // Initialize transaction history
+        updateTransactionHistory();
+
+        // Update deposit modal balance display
+        document.getElementById('depositAccount').addEventListener('change', function() {
+            const balanceDisplay = document.getElementById('currentBalance');
+            balanceDisplay.textContent = this.value ? `R${accounts[this.value].toFixed(2)}` : 'R0.00';
+        });
+
+    // Navigation Handling
+const sections = {
+    dashboard: document.getElementById('dashboardMain'),
+    profile: document.getElementById('profileSection'),
+    settings: document.getElementById('settingsSection')
+};
+
+document.querySelectorAll('.menu-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = item.querySelector('span').textContent.toLowerCase();
+        
+        // Remove active class from all menu items
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        // Add active class to clicked item
+        item.classList.add('active');
+        
+        // Hide all sections
+        Object.values(sections).forEach(section => section.style.display = 'none');
+        
+        // Show target section
+        if(target === 'dashboard') {
+            sections.dashboard.style.display = 'block';
+        } else if(target === 'profile') {
+            sections.profile.style.display = 'block';
+        } else if(target === 'settings') {
+            sections.settings.style.display = 'block';
+        }
+    });
+});
+
+// Logout Functionality
+document.querySelector('.logout-btn').addEventListener('click', () => {
+    if(confirm('Are you sure you want to logout?')) {
+        window.location.href = 'interface.html';
+    }
+});
+
+// Profile Form Submission
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const newPin = document.getElementById('newPin').value;
+    const confirmPin = document.getElementById('confirmPin').value;
+    
+    if(newPin && newPin !== confirmPin) {
+        alert('PINs do not match!');
+        return;
+    }
+    
+    // Here you would typically send data to server
+    alert('Profile updated successfully!');
+    this.reset();
+});
+
+// Settings Form Submission
+document.getElementById('settingsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Here you would typically send data to server
+    alert('Settings saved successfully!');
+});
+</script>
+</body>
+</html>

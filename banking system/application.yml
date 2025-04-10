@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:banking_system.db  # Path to your SQLite database file
+    driver-class-name: org.sqlite.JDBC
+    username: admin  # Username for the SQLite connection (can be left as 'admin' or empty since SQLite doesn't require authentication)
+    password: admin  # Password for the SQLite connection (can be left as 'admin' or empty)
+    platform: sqlite
+  jpa:
+    hibernate:
+      ddl-auto: update  # Automatically update the database schema based on entities. Can be 'create', 'validate', or 'none'.
+    database-platform: org.hibernate.dialect.SQLiteDialect
+    show-sql: true  # Show SQL queries in the log (optional, useful for debugging)
+  jackson:
+    serialization:
+      fail-on-empty-beans: false  # Prevent errors on empty beans (if any)
+
+server:
+  port: 8080  # Default port for Spring Boot server
+
+logging:
+  level:
+    org.hibernate.SQL: debug  # Enable SQL logging for Hibernate
+    org.hibernate.type.descriptor.sql.BasicBinder: trace  # Trace bind parameters in SQL
+
+# Optionally, you can configure the file path for SQLite (if it's not in the root folder):
+# spring.datasource.url: jdbc:sqlite:/path/to/your/database/banking_system.db
